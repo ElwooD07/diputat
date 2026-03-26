@@ -1,0 +1,386 @@
+[
+  {
+    "_id": "verification-1",
+    "statement_id": "statement-2",
+    "result": "true",
+    "confidence": 0.95,
+    "verdict": "The IT sector does indeed contribute approximately 12% of Ukraine's GDP according to recent economic data.",
+    "evidence": [
+      {
+        "type": "official_data",
+        "source": "National Bank of Ukraine Economic Report 2026",
+        "url": "https://bank.gov.ua/en/news",
+        "content": "Information technology and services sector contribution: 11.8% of GDP (2025 est.)",
+        "date": "2026-03-19T00:00:00Z",
+        "relevance": 0.98
+      },
+      {
+        "type": "report",
+        "source": "Ukraine Tech Chamber Report",
+        "url": "https://example.org/tech-report",
+        "content": "Confirmed 12.1% IT sector GDP contribution based on enterprise survey data",
+        "date": "2026-03-18T00:00:00Z",
+        "relevance": 0.92
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T09:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-19T11:00:00Z",
+          "event": "Statement registered for AI analysis.",
+          "related_statement_id": "statement-2"
+        },
+        {
+          "date": "2026-03-20T09:00:00Z",
+          "event": "Human verifier confirmed AI findings with official sources.",
+          "related_statement_id": "statement-2"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Statement aligns with multiple reliable economic sources.",
+    "metadata": {
+      "created_at": "2026-03-20T09:00:00Z",
+      "updated_at": "2026-03-20T09:00:00Z",
+      "verification_duration_ms": 245000
+    }
+  },
+  {
+    "_id": "verification-2",
+    "statement_id": "statement-3",
+    "result": "partially",
+    "confidence": 0.81,
+    "verdict": "Healthcare expenditure has increased, but the 200% figure appears inflated. Audited data shows approximately 165% increase in nominal terms since 2020.",
+    "evidence": [
+      {
+        "type": "official_data",
+        "source": "Ministry of Health Budget Report 2026",
+        "url": "https://moz.gov.ua/article",
+        "content": "Total healthcare budget increased from 2020: 165.3% in nominal terms, 48% in real terms (adjusted for inflation)",
+        "date": "2026-03-20T00:00:00Z",
+        "relevance": 0.96
+      },
+      {
+        "type": "analysis",
+        "source": "Institute for Budget & Social Policy",
+        "url": "https://example.org/budget-analysis",
+        "content": "Nominal increase is 165%; real spending increase is lower when adjusted for inflation impact",
+        "date": "2026-03-15T00:00:00Z",
+        "relevance": 0.89
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T10:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-18T16:00:00Z",
+          "event": "Statement registered; AI flagged potential inflation of numbers.",
+          "related_statement_id": "statement-3"
+        },
+        {
+          "date": "2026-03-20T10:00:00Z",
+          "event": "Human analyst confirmed: nominal 165% is accurate, but 200% claim is misleading.",
+          "related_statement_id": "statement-3"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Official uses nominal figures without inflation adjustment; misleading presentation of real spending.",
+    "metadata": {
+      "created_at": "2026-03-20T10:00:00Z",
+      "updated_at": "2026-03-20T10:00:00Z",
+      "verification_duration_ms": 320000
+    }
+  },
+  {
+    "_id": "verification-3",
+    "statement_id": "statement-4",
+    "result": "misleading",
+    "confidence": 0.88,
+    "verdict": "NATO membership timeline is unrealistic. Standard NATO accession process takes 3-7 years minimum. 2027 target contradicts established diplomatic timelines.",
+    "evidence": [
+      {
+        "type": "official_policy",
+        "source": "NATO Enlargement Handbook",
+        "url": "https://www.nato.int/cps/en/natolive/topics_49212.htm",
+        "content": "Accession process includes multiple rounds of review, formal application, ratification by all 31 members. Average duration: 5-7 years",
+        "date": "2026-03-01T00:00:00Z",
+        "relevance": 0.99
+      },
+      {
+        "type": "statement",
+        "source": "EU European Council Statement March 2026",
+        "url": "https://example.org/eu-council",
+        "content": "Ukraine's NATO path acknowledged as multi-year process; realistic timeline 2028-2030",
+        "date": "2026-03-15T00:00:00Z",
+        "relevance": 0.91
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T11:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-17T10:00:00Z",
+          "event": "Statement flagged as containing unrealistic timeline.",
+          "related_statement_id": "statement-4"
+        },
+        {
+          "date": "2026-03-20T11:00:00Z",
+          "event": "Expert analyst confirmed: statement misleads on timeline expectations.",
+          "related_statement_id": "statement-4"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Deputy may possess insider information, but official NATO procedure contradicts this claim.",
+    "metadata": {
+      "created_at": "2026-03-20T11:00:00Z",
+      "updated_at": "2026-03-20T11:00:00Z",
+      "verification_duration_ms": 285000
+    }
+  },
+  {
+    "_id": "verification-4",
+    "statement_id": "statement-5",
+    "result": "unverifiable",
+    "confidence": 0.62,
+    "verdict": "Corruption Perception Index improvement is difficult to verify independently. The CPI is published annually by Transparency International and will not have 2025 results until May 2026.",
+    "evidence": [
+      {
+        "type": "report",
+        "source": "Transparency International",
+        "url": "https://www.transparency.org",
+        "content": "CPI 2025 results to be published May 2026. Ukraine 2024 CPI: 36/100. Historical improvement unlikely to be 40 points.",
+        "date": "2026-03-01T00:00:00Z",
+        "relevance": 0.94
+      },
+      {
+        "type": "analysis",
+        "source": "Anticorruption Advocacy Group",
+        "url": "https://example.org/corruption-analysis",
+        "content": "Based on 2024 baseline, a 40-point jump would be unprecedented and requires independent verification",
+        "date": "2026-03-16T00:00:00Z",
+        "relevance": 0.85
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T12:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-16T12:30:00Z",
+          "event": "Statement identified as premature; TI data pending for 2025.",
+          "related_statement_id": "statement-5"
+        },
+        {
+          "date": "2026-03-20T12:00:00Z",
+          "event": "Verified: cannot confirm or deny until official CPI 2025 released.",
+          "related_statement_id": "statement-5"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Deputy may be citing internal assessments. Recommend re-verification when official 2025 CPI published.",
+    "metadata": {
+      "created_at": "2026-03-20T12:00:00Z",
+      "updated_at": "2026-03-20T12:00:00Z",
+      "verification_duration_ms": 195000
+    }
+  },
+  {
+    "_id": "verification-5",
+    "statement_id": "statement-7",
+    "result": "true",
+    "confidence": 0.92,
+    "verdict": "Air quality in Kyiv has improved by approximately 30% since 2020 based on PM2.5 and NO2 measurements.",
+    "evidence": [
+      {
+        "type": "environmental_data",
+        "source": "Kyiv City Environmental Monitoring System",
+        "url": "https://agromet.gov.ua/en",
+        "content": "PM2.5 levels decreased from 2020 average 35 µg/m³ to 2025 average 24.5 µg/m³ (30% reduction)",
+        "date": "2026-03-20T00:00:00Z",
+        "relevance": 0.96
+      },
+      {
+        "type": "report",
+        "source": "UNEP Ukraine Air Quality Report",
+        "url": "https://example.org/unep-ukraine",
+        "content": "Independent verification: Kyiv air quality improved 28-32% from 2020-2025 period",
+        "date": "2026-03-18T00:00:00Z",
+        "relevance": 0.90
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T13:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-14T11:30:00Z",
+          "event": "Statement analyzed by environmental AI model.",
+          "related_statement_id": "statement-7"
+        },
+        {
+          "date": "2026-03-20T13:00:00Z",
+          "event": "Environmental expert confirmed with monitoring data.",
+          "related_statement_id": "statement-7"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Improvement likely due to reduced industrial activity, increased green infrastructure, and COVID-19 spillover effects.",
+    "metadata": {
+      "created_at": "2026-03-20T13:00:00Z",
+      "updated_at": "2026-03-20T13:00:00Z",
+      "verification_duration_ms": 210000
+    }
+  },
+  {
+    "_id": "verification-6",
+    "statement_id": "statement-10",
+    "result": "true",
+    "confidence": 0.94,
+    "verdict": "Kharkiv has indeed restored approximately 300 residential buildings as of March 2026.",
+    "evidence": [
+      {
+        "type": "official_data",
+        "source": "Kharkiv City Administration Reconstruction Report",
+        "url": "https://kharkiv.gov.ua/news",
+        "content": "As of March 20, 2026: 298 residential buildings fully restored, 47 underway (305 target for Q1)",
+        "date": "2026-03-20T00:00:00Z",
+        "relevance": 0.98
+      },
+      {
+        "type": "satellite_imagery",
+        "source": "International Organization for Migration",
+        "url": "https://iom.org.ua",
+        "content": "Satellite image analysis confirms approximately 300 residential structures with recent reconstruction indicators",
+        "date": "2026-03-15T00:00:00Z",
+        "relevance": 0.93
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T14:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-11T16:00:00Z",
+          "event": "Statement captured from mayor interview.",
+          "related_statement_id": "statement-10"
+        },
+        {
+          "date": "2026-03-20T14:00:00Z",
+          "event": "Verified against official records and satellite data.",
+          "related_statement_id": "statement-10"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Impressive reconstruction pace; verified through multiple independent sources.",
+    "metadata": {
+      "created_at": "2026-03-20T14:00:00Z",
+      "updated_at": "2026-03-20T14:00:00Z",
+      "verification_duration_ms": 198000
+    }
+  },
+  {
+    "_id": "verification-7",
+    "statement_id": "statement-14",
+    "result": "true",
+    "confidence": 0.96,
+    "verdict": "The EU has indeed allocated approximately €20 billion to Ukraine for reconstruction and recovery.",
+    "evidence": [
+      {
+        "type": "official_statement",
+        "source": "European Commission Statement March 2026",
+        "url": "https://ec.europa.eu/commission/news",
+        "content": "EU allocated €20.1 billion from Recovery and Resilience Facility and European Reconstruction Fund for Ukraine",
+        "date": "2026-03-15T00:00:00Z",
+        "relevance": 0.99
+      },
+      {
+        "type": "legal_document",
+        "source": "Council of the European Union Decision",
+        "url": "https://data.consilium.europa.eu",
+        "content": "Official EU budget allocation: €19.8 billion confirmed, with additional €1.2 billion in technical assistance",
+        "date": "2026-03-10T00:00:00Z",
+        "relevance": 0.97
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T15:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-07T14:15:00Z",
+          "event": "Statement extracted from EU relations discussion.",
+          "related_statement_id": "statement-14"
+        },
+        {
+          "date": "2026-03-20T15:00:00Z",
+          "event": "European policy expert confirmed with official EU documents.",
+          "related_statement_id": "statement-14"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "High-priority statement; multiple cross-references to official EU sources.",
+    "metadata": {
+      "created_at": "2026-03-20T15:00:00Z",
+      "updated_at": "2026-03-20T15:00:00Z",
+      "verification_duration_ms": 156000
+    }
+  },
+  {
+    "_id": "verification-8",
+    "statement_id": "statement-17",
+    "result": "partially",
+    "confidence": 0.79,
+    "verdict": "Ukraine has planted approximately 8 million trees, not 10 million. The goal is 10 million by 2027, with 8 million planted as of March 2026.",
+    "evidence": [
+      {
+        "type": "official_data",
+        "source": "Ministry of Environmental Protection Report",
+        "url": "https://mepr.gov.ua",
+        "content": "Green Nation Initiative: 8.2 million trees planted as of March 2026. Target: 10 million by 2027",
+        "date": "2026-03-20T00:00:00Z",
+        "relevance": 0.97
+      },
+      {
+        "type": "audit",
+        "source": "Independent Environmental Audit",
+        "url": "https://example.org/env-audit",
+        "content": "Confirmed: 8.1-8.3 million trees verified through satellite and ground sampling",
+        "date": "2026-03-18T00:00:00Z",
+        "relevance": 0.91
+      }
+    ],
+    "timeline": {
+      "checked_at": "2026-03-20T16:00:00Z",
+      "verified_by": "hybrid_ai_human",
+      "history": [
+        {
+          "date": "2026-03-04T12:45:00Z",
+          "event": "Statement extracted; AI flagged potential target vs. achievement confusion.",
+          "related_statement_id": "statement-17"
+        },
+        {
+          "date": "2026-03-20T16:00:00Z",
+          "event": "Environmental analyst confirmed: 8M planted, 10M is target.",
+          "related_statement_id": "statement-17"
+        }
+      ]
+    },
+    "contradictions": [],
+    "notes": "Deputy conflated current achievement with program goal; common in optimistic political messaging.",
+    "metadata": {
+      "created_at": "2026-03-20T16:00:00Z",
+      "updated_at": "2026-03-20T16:00:00Z",
+      "verification_duration_ms": 238000
+    }
+  }
+]

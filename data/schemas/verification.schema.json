@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://diputat.local/schemas/verification.schema.json",
+  "title": "Verification",
+  "description": "Схема для результату верифікації заяви",
+  "type": "object",
+  "required": ["_id", "statement_id", "result"],
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "Унікальний ідентифікатор верифікації"
+    },
+    "statement_id": {
+      "type": "string",
+      "description": "ID заяви, що перевіряється"
+    },
+    "result": {
+      "type": "string",
+      "enum": ["true", "false", "partially", "unverifiable", "misleading"],
+      "description": "Результат перевірки"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Рівень впевненості в результаті (0-1)"
+    },
+    "verdict": {
+      "type": "string",
+      "description": "Детальний вердикт українською"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["official_data", "statistics", "document", "expert_opinion", "historical_fact", "media_report"],
+            "description": "Тип доказу"
+          },
+          "source": {
+            "type": "string",
+            "description": "Джерело доказу"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Посилання на джерело"
+          },
+          "content": {
+            "type": "string",
+            "description": "Опис/цитата доказу"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Дата доказу"
+          },
+          "relevance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Релевантність доказу"
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "checked_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Дата перевірки"
+        },
+        "verified_by": {
+          "type": "string",
+          "enum": ["ai_agent", "manual", "hybrid"],
+          "description": "Хто виконав перевірку"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "event": {
+                "type": "string",
+                "description": "Опис події"
+              },
+              "related_statement_id": {
+                "type": "string",
+                "description": "ID пов'язаної заяви (якщо є)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statement_id": {
+            "type": "string",
+            "description": "ID суперечливої заяви тієї ж особи"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Суперечності з попередніми заявами"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Додаткові нотатки"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verification_duration_ms": {
+          "type": "integer",
+          "description": "Тривалість перевірки в мілісекундах"
+        }
+      }
+    }
+  }
+}

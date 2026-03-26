@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://diputat.local/schemas/statement.schema.json",
+  "title": "Statement",
+  "description": "Схема для заяви публічної особи",
+  "type": "object",
+  "required": ["_id", "official_id", "content", "source"],
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "Унікальний ідентифікатор заяви"
+    },
+    "official_id": {
+      "type": "string",
+      "description": "ID публічної особи"
+    },
+    "content": {
+      "type": "string",
+      "description": "Текст заяви"
+    },
+    "source": {
+      "type": "object",
+      "required": ["type", "date"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["media", "social", "official", "interview", "speech", "press-release"],
+          "description": "Тип джерела"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Посилання на джерело"
+        },
+        "title": {
+          "type": "string",
+          "description": "Назва джерела/статті"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Дата публікації"
+        },
+        "media_outlet": {
+          "type": "string",
+          "description": "Назва медіа"
+        }
+      }
+    },
+    "extracted_by": {
+      "type": "string",
+      "enum": ["ai_agent", "manual", "scraper"],
+      "description": "Спосіб екстракції"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["new", "analyzing", "verified", "disputed", "archived"],
+      "description": "Статус обробки"
+    },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Теми заяви (економіка, освіта, безпека, тощо)"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": ["positive", "negative", "neutral"],
+      "description": "Тональність заяви (опціонально, від AI)"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "language": {
+          "type": "string",
+          "description": "Мова заяви (uk, en, ru)"
+        },
+        "ai_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Впевненість AI в екстракції"
+        }
+      }
+    }
+  }
+}

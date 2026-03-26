@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: diputat-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: diputat
+    volumes:
+      - mongodb_data:/data/db
+      - ./data/seeds:/docker-entrypoint-initdb.d:ro
+    networks:
+      - diputat-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: diputat-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      DATA_DIR: /data/samples
+    volumes:
+      - ./backend:/app
+      - ./data:/data
+    networks:
+      - diputat-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: diputat-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    environment:
+      VITE_API_URL: http://localhost:8080/api/v1
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - diputat-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: diputat-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongodb
+    networks:
+      - diputat-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  diputat-network:
+    driver: bridge

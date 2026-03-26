@@ -1,0 +1,27 @@
+{
+  "recommendations": [
+    // Go development
+    "golang.go",
+
+    // React and TypeScript development
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+
+    // General utilities
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "ms-vscode.vscode-json-languageservice",
+
+    // Docker support
+    "ms-azuretools.vscode-docker",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+
+    // Optional but useful
+    "wayou.vscode-todo-highlight",
+    "gruntfuggly.todo-tree"
+  ],
+  "unwantedRecommendations": []
+}

@@ -1,0 +1,14 @@
+{
+  "version": "001",
+  "description": "Create initial collections for officials, statements, and verifications.",
+  "up": {
+    "collections": [
+      "officials",
+      "statements",
+      "verifications"
+    ]
+  },
+  "down": {
+    "collections": []
+  }
+}

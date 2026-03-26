@@ -1,0 +1,90 @@
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs
+.idea/
+*.sublime-*
+*.code-workspace
+
+# VSCode - Keep settings but ignore user-specific files
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/README.md
+
+# Visual Studio (legacy C++ project - not used)
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+.vs/
+diputat.cpp
+
+# Backend (Go)
+backend/*.exe
+backend/*.dll
+backend/*.so
+backend/*.dylib
+backend/*.test
+backend/*.out
+backend/vendor/
+backend/.env
+backend/go.work
+
+# Frontend (React and Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.sass-cache/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.env
+
+# Data
+data/*.db
+data/*.sqlite
+data/temp/
+data/*.log
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+build/
+dist/
+tmp/
+
+# MongoDB
+*.mongo
+
+# Coverage
+coverage/
+*.cover
+*.coverage
+
+# Dependencies
+node_modules/
+vendor/
+
+# C++ build artifacts (legacy)
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.tlog
+*.idb
+*.user
+x64/
+Debug/
+Release/

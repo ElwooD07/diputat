@@ -1,0 +1,28 @@
+{
+  "name": "diputat-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4200",
+    "smoke": "playwright test",
+    "smoke:headed": "playwright test --headed",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "lint": "npm run typecheck",
+    "test": "npm run typecheck"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+	"@playwright/test": "^1.53.1",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "project": {
+    "name": "Diputat Fact-Check Platform",
+    "version": "0.1.0",
+    "description": "Research project for monitoring and verifying statements of public officials"
+  },
+  "standards": {
+    "language": "en",
+    "documentation": {
+      "language": "en",
+      "style": "markdown",
+      "required_sections": [
+        "description",
+        "structure",
+        "usage",
+        "examples"
+      ]
+    },
+    "code": {
+      "comments": "en",
+      "variable_naming": {
+        "go": "camelCase",
+        "typescript": "camelCase",
+        "json": "snake_case"
+      },
+      "file_naming": {
+        "go": "snake_case",
+        "typescript": "kebab-case",
+        "json": "snake_case"
+      }
+    },
+    "commit_messages": {
+      "language": "en",
+      "format": "<type>(<scope>): <subject>",
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "test",
+        "chore"
+      ]
+    }
+  },
+  "architecture": {
+    "backend": {
+      "language": "go",
+      "version": "1.21+",
+      "style": "tabs"
+    },
+    "frontend": {
+      "framework": "react",
+      "tooling": "vite",
+      "version": "18+",
+      "style": "2-spaces"
+    },
+    "database": {
+      "type": "nosql",
+      "engine": "json-first, mongodb-later",
+      "approach": "document-oriented"
+    }
+  },
+  "principles": {
+    "closed_system": "No public API, local testing only",
+    "mental_model": "Documents represent concepts, not rigid structures",
+    "ai_driven": "Automation through AI agents",
+    "simplicity": "Minimalism in code and architecture"
+  },
+  "rules": {
+    "all_documentation_in_english": true,
+    "all_code_comments_in_english": true,
+    "commit_messages_in_english": true,
+    "variable_names_in_english": true,
+    "use_editorconfig": true,
+    "use_linters": true,
+    "required_readme_in_each_directory": true
+  }
+}
