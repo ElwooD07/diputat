@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1",
+    "name": "Слуга Народу №1",
+    "current_role": "Народний Депутат",
+    "verification_score": 85.5
+  },
+  {
+    "id": "2",
+    "name": "Типовий Пиздун",
+    "current_role": "Голова Комітету",
+    "verification_score": 12.0
+  }
+]

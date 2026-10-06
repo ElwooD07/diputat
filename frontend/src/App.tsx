@@ -1,234 +1,223 @@
-import { useEffect, useMemo, useState } from 'react';
-import { fetchOfficials, fetchStatements, fetchTimeline, fetchVerifications } from './api';
-import type { Official, Statement, TimelineEvent, Verification } from './models';
+import { useEffect, useState } from 'react';
 
-type LoadState = 'idle' | 'loading' | 'ready' | 'error';
-
-function formatDate(value: string): string {
-  return new Date(value).toLocaleString();
+interface Official {
+  id: string;
+  name: string;
+  current_role: string;
+  verification_score: number;
 }
 
-function resultLabel(result?: string): string {
-  switch (result) {
-    case 'true':
-      return 'True';
-    case 'false':
-      return 'False';
-    case 'partially':
-      return 'Partially true';
-    case 'misleading':
-      return 'Misleading';
-    case 'unverifiable':
-      return 'Unverifiable';
-    default:
-      return 'Pending';
+interface Statement {
+  id: string;
+  official_id: string;
+  text: string;
+  status: 'InProgress' | 'Done' | 'Blocked' | 'Toxic';
+  source_url: string;
+}
+
+const OFFICIALS_URL = 'http://localhost:8080/api/v1/officials';
+const STATEMENTS_URL = 'http://localhost:8080/api/v1/statements';
+const FRIENDLY_BACKEND_ERROR = 'Backend connection issue. If this is a CORS error, we will patch Go next.';
+
+function scoreBadgeClass(score: number): string {
+  if (score < 30) {
+    return 'bg-red-100 text-red-700 border-red-200';
   }
+
+  if (score > 70) {
+    return 'bg-green-100 text-green-700 border-green-200';
+  }
+
+  return 'bg-slate-100 text-slate-700 border-slate-200';
 }
 
 export default function App() {
-  const [state, setState] = useState<LoadState>('idle');
-  const [error, setError] = useState<string>('');
-  const [selectedOfficialId, setSelectedOfficialId] = useState<string>('all');
   const [officials, setOfficials] = useState<Official[]>([]);
   const [statements, setStatements] = useState<Statement[]>([]);
-  const [verifications, setVerifications] = useState<Verification[]>([]);
-  const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
+  const [isOfficialsLoading, setIsOfficialsLoading] = useState<boolean>(true);
+  const [isStatementsLoading, setIsStatementsLoading] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
-    let active = true;
+    let isActive = true;
 
-    async function loadDashboard() {
-      setState('loading');
-      setError('');
+    async function loadOfficials(): Promise<void> {
+      setIsOfficialsLoading(true);
+      setErrorMessage('');
 
       try {
-        const officialFilter = selectedOfficialId === 'all' ? undefined : selectedOfficialId;
-        const [nextOfficials, nextStatements, nextVerifications, nextTimeline] = await Promise.all([
-          fetchOfficials(),
-          fetchStatements(officialFilter),
-          fetchVerifications(),
-          fetchTimeline(officialFilter)
-        ]);
+        const response = await fetch(OFFICIALS_URL);
 
-        if (!active) {
-          return;
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
         }
 
-        setOfficials(nextOfficials);
-        setStatements(nextStatements);
-        setVerifications(nextVerifications);
-        setTimeline(nextTimeline);
-        setState('ready');
-      } catch (loadError) {
-        if (!active) {
-          return;
+        const data: unknown = await response.json();
+        const items = Array.isArray(data) ? data : (data as { items?: unknown }).items;
+
+        if (!Array.isArray(items)) {
+          throw new Error('Unexpected officials payload');
         }
 
-        setError(loadError instanceof Error ? loadError.message : 'Unknown error');
-        setState('error');
+        const parsedOfficials = items as Official[];
+
+        if (isActive) {
+          setOfficials(parsedOfficials);
+        }
+      } catch {
+        if (isActive) {
+          setOfficials([]);
+          setErrorMessage(FRIENDLY_BACKEND_ERROR);
+        }
+      } finally {
+        if (isActive) {
+          setIsOfficialsLoading(false);
+        }
       }
     }
 
-    void loadDashboard();
+    void loadOfficials();
 
     return () => {
-      active = false;
+      isActive = false;
     };
-  }, [selectedOfficialId]);
+  }, []);
 
-  const verificationsByStatementId = useMemo(() => {
-    return new Map(verifications.map((verification) => [verification.statement_id, verification]));
-  }, [verifications]);
+  useEffect(() => {
+    let isActive = true;
 
-  const statementCounts = useMemo(() => {
-    const verified = statements.filter((statement) => statement.status === 'verified').length;
+    async function loadStatements(): Promise<void> {
+      setIsStatementsLoading(true);
 
-    return {
-      officials: officials.length,
-      statements: statements.length,
-      verified,
-      timeline: timeline.length
+      try {
+        const response = await fetch(STATEMENTS_URL);
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data: unknown = await response.json();
+        const items = Array.isArray(data) ? data : (data as { items?: unknown }).items;
+
+        if (!Array.isArray(items)) {
+          throw new Error('Unexpected statements payload');
+        }
+
+        const parsedStatements = items as Statement[];
+
+        if (isActive) {
+          setStatements(parsedStatements);
+        }
+      } catch {
+        if (isActive) {
+          setStatements([]);
+          setErrorMessage(FRIENDLY_BACKEND_ERROR);
+        }
+      } finally {
+        if (isActive) {
+          setIsStatementsLoading(false);
+        }
+      }
+    }
+
+    void loadStatements();
+
+    return () => {
+      isActive = false;
     };
-  }, [officials.length, statements, timeline.length]);
+  }, []);
+
+  const inProgressStatements = statements.filter((statement) => statement.status === 'InProgress');
+  const doneStatements = statements.filter((statement) => statement.status === 'Done');
+  const blockedStatements = statements.filter((statement) => statement.status === 'Blocked');
+  const toxicStatements = statements.filter((statement) => statement.status === 'Toxic');
 
   return (
-    <div className="page-shell">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">Diputat</p>
-          <h1>Research dashboard for structured fact-checking</h1>
-          <p className="hero-copy">
-            The MVP keeps the workflow deterministic: statements, evidence, and verdicts are loaded from local JSON data through the Go API.
-          </p>
-        </div>
-        <label className="filter-panel">
-          <span>Focus official</span>
-          <select value={selectedOfficialId} onChange={(event) => setSelectedOfficialId(event.target.value)}>
-            <option value="all">All officials</option>
-            {officials.map((official) => (
-              <option key={official._id} value={official._id}>
-                {official.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </header>
+    <div className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <div className="mx-auto max-w-7xl">
+        <header className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">JIRA for the slaves in power</h1>
+        </header>
 
-      <section className="metrics-grid">
-        <article className="metric-card">
-          <span>Officials</span>
-          <strong>{statementCounts.officials}</strong>
-        </article>
-        <article className="metric-card">
-          <span>Statements</span>
-          <strong>{statementCounts.statements}</strong>
-        </article>
-        <article className="metric-card">
-          <span>Verified statements</span>
-          <strong>{statementCounts.verified}</strong>
-        </article>
-        <article className="metric-card">
-          <span>Timeline events</span>
-          <strong>{statementCounts.timeline}</strong>
-        </article>
-      </section>
+        {isOfficialsLoading || isStatementsLoading ? (
+          <p className="mb-6 text-sm text-slate-600">Loading dashboard data...</p>
+        ) : null}
 
-      {state === 'loading' ? <p className="status-banner">Loading dashboard data...</p> : null}
-      {state === 'error' ? <p className="status-banner error">Unable to load data: {error}</p> : null}
+        {errorMessage ? (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-800">{errorMessage}</div>
+        ) : null}
 
-      <main className="content-grid">
-        <section className="panel">
-          <div className="panel-header">
-            <h2>Officials</h2>
-            <span>{officials.length} tracked</span>
-          </div>
-          <div className="stack-list">
-            {officials.map((official) => (
-              <article className="stack-card" key={official._id}>
-                <div>
-                  <h3>{official.name}</h3>
-                  <p>{official.position}</p>
-                </div>
-                <span>{official.party ?? 'Non-partisan'}</span>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="panel wide">
-          <div className="panel-header">
-            <h2>Statements</h2>
-            <span>{statements.length} loaded</span>
-          </div>
-          <div className="stack-list">
-            {statements.map((statement) => {
-              const verification = verificationsByStatementId.get(statement._id);
-
-              return (
-                <article className="statement-card" key={statement._id}>
-                  <div className="statement-meta-row">
-                    <span>{statement.source.media_outlet ?? statement.source.type}</span>
-                    <span>{formatDate(statement.source.date)}</span>
-                  </div>
-                  <h3>{statement.source.title ?? 'Untitled source'}</h3>
-                  <p>{statement.content}</p>
-                  <div className="tag-row">
-                    <span className="tag">{statement.status}</span>
-                    {statement.topics?.map((topic) => (
-                      <span className="tag muted" key={topic}>
-                        {topic}
-                      </span>
-                    ))}
-                    <span className={`tag verdict ${verification?.result ?? 'pending'}`}>
-                      {resultLabel(verification?.result)}
+        {!errorMessage ? (
+          <>
+            <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {officials.map((official) => (
+                <article
+                  key={official.id}
+                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-lg font-semibold text-slate-900">{official.name}</h2>
+                      <p className="mt-1 text-sm text-slate-600">{official.current_role}</p>
+                    </div>
+                    <span
+                      className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${scoreBadgeClass(official.verification_score)}`}
+                    >
+                      {official.verification_score}
                     </span>
                   </div>
                 </article>
-              );
-            })}
-          </div>
-        </section>
+              ))}
+            </section>
 
-        <section className="panel">
-          <div className="panel-header">
-            <h2>Verifications</h2>
-            <span>{verifications.length} completed</span>
-          </div>
-          <div className="stack-list">
-            {verifications.map((verification) => (
-              <article className="stack-card verification-card" key={verification._id}>
-                <div>
-                  <h3>{resultLabel(verification.result)}</h3>
-                  <p>{verification.verdict}</p>
-                </div>
-                <span>{Math.round((verification.confidence ?? 0) * 100)}%</span>
-              </article>
-            ))}
-          </div>
-        </section>
+            <section className="mt-10">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900">Policy Execution Board</h2>
+              </div>
 
-        <section className="panel wide">
-          <div className="panel-header">
-            <h2>Timeline</h2>
-            <span>{timeline.length} events</span>
-          </div>
-          <div className="timeline-list">
-            {timeline.map((event) => (
-              <article className="timeline-item" key={event.id}>
-                <div className="timeline-dot" />
-                <div>
-                  <div className="statement-meta-row">
-                    <span>{event.title}</span>
-                    <span>{formatDate(event.occurred_at)}</span>
-                  </div>
-                  <p>{event.summary}</p>
-                  {event.result ? <span className={`tag verdict ${event.result}`}>{resultLabel(event.result)}</span> : null}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      </main>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+                <KanbanColumn title="Backlog / In Progress" items={inProgressStatements} />
+                <KanbanColumn title="Done / Kept Promises" items={doneStatements} />
+                <KanbanColumn title="Blocked / Slacking" items={blockedStatements} />
+                <KanbanColumn title="Toxic / Corrupt Action" items={toxicStatements} />
+              </div>
+            </section>
+          </>
+        ) : null}
+      </div>
     </div>
+  );
+}
+
+function KanbanColumn({ title, items }: { title: string; items: Statement[] }) {
+  return (
+    <section className="rounded-2xl border border-slate-300 bg-slate-200/60 p-3">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">{title}</h3>
+        <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-slate-600">{items.length}</span>
+      </div>
+
+      <div className="space-y-3">
+        {items.map((statement) => (
+          <article key={statement.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-sm leading-6 text-slate-800">{statement.text}</p>
+            <p className="mt-3 text-xs font-medium text-slate-500">Assigned to: Official #{statement.official_id}</p>
+            <a
+              href={statement.source_url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+            >
+              View Source
+            </a>
+          </article>
+        ))}
+        {items.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-100 p-4 text-xs text-slate-500">
+            No statements in this lane.
+          </div>
+        ) : null}
+      </div>
+    </section>
   );
 }

@@ -1,56 +1,33 @@
 package api
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
-	"time"
 
-	"github.com/diputat/diputat/backend/internal/models"
+	"github.com/diputat/diputat/backend/internal/config"
 )
 
-func TestBuildTimelineSortsAndFilters(t *testing.T) {
-	statements := []models.Statement{
-		{
-			ID:         "statement-1",
-			OfficialID: "official-1",
-			Content:    "Budget spending increased by 12%.",
-			Source: models.StatementSource{
-				Title: "Budget interview",
-				Date:  time.Date(2026, 3, 20, 9, 0, 0, 0, time.UTC),
-			},
-		},
-		{
-			ID:         "statement-2",
-			OfficialID: "official-2",
-			Content:    "Road repairs are complete.",
-			Source: models.StatementSource{
-				Title: "Press conference",
-				Date:  time.Date(2026, 3, 19, 9, 0, 0, 0, time.UTC),
-			},
-		},
-	}
+func TestHealthRoute(t *testing.T) {
+	server := NewServer(config.Config{})
+	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	rec := httptest.NewRecorder()
 
-	verifications := []models.Verification{
-		{
-			ID:          "verification-1",
-			StatementID: "statement-1",
-			Result:      "partially",
-			Verdict:     "Budget spending rose, but not by the claimed amount.",
-			Timeline: models.VerificationTimeline{
-				CheckedAt: time.Date(2026, 3, 21, 10, 0, 0, 0, time.UTC),
-			},
-		},
-	}
+	server.ServeHTTP(rec, req)
 
-	events := buildTimeline(statements, verifications, "official-1")
-	if len(events) != 2 {
-		t.Fatalf("expected 2 events, got %d", len(events))
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", rec.Code)
 	}
+}
 
-	if events[0].EventType != "verification_completed" {
-		t.Fatalf("expected latest event to be verification, got %s", events[0].EventType)
-	}
+func TestUnknownRoute(t *testing.T) {
+	server := NewServer(config.Config{})
+	req := httptest.NewRequest(http.MethodGet, "/missing", nil)
+	rec := httptest.NewRecorder()
 
-	if events[1].StatementID != "statement-1" {
-		t.Fatalf("expected filtered statement to remain, got %s", events[1].StatementID)
+	server.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("expected 404, got %d", rec.Code)
 	}
 }
