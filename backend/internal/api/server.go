@@ -92,20 +92,18 @@ func (s *Server) getOfficial(w http.ResponseWriter, r *http.Request, id string) 
 }
 
 func (s *Server) listStatements(w http.ResponseWriter, r *http.Request) {
-	statements, err := s.repository.ListStatements(r.Context())
+	var (
+		statements []models.Statement
+		err        error
+	)
+	if officialID := r.URL.Query().Get("official_id"); officialID != "" {
+		statements, err = s.repository.ListStatementsByOfficialID(r.Context(), officialID)
+	} else {
+		statements, err = s.repository.ListStatements(r.Context())
+	}
 	if err != nil {
 		s.handleError(w, err)
 		return
-	}
-
-	if officialID := r.URL.Query().Get("official_id"); officialID != "" {
-		filtered := make([]models.Statement, 0, len(statements))
-		for _, statement := range statements {
-			if statement.OfficialID == officialID {
-				filtered = append(filtered, statement)
-			}
-		}
-		statements = filtered
 	}
 
 	s.writeJSON(w, http.StatusOK, map[string]any{"items": statements})
@@ -214,7 +212,7 @@ func buildTimeline(statements []models.Statement, verifications []models.Verific
 			VerificationID: verification.ID,
 			EventType:      "verification_completed",
 			Title:          "Verification completed",
-			Summary:        verification.Verdict,
+			Summary:        string(verification.Verdict),
 			OccurredAt:     verification.Timeline.CheckedAt,
 			Result:         verification.Result,
 		})
