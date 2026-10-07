@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 // SocialContact stores public social profile references.
 type SocialContact struct {
 	Platform string `json:"platform"`
@@ -21,7 +23,7 @@ type ContactSet struct {
 
 // Official represents a person whose public claims are tracked.
 type Official struct {
-	ID                string     `json:"_id"`
+	ID                string     `json:"id"`
 	Name              string     `json:"name"`
 	CurrentRole       string     `json:"current_role,omitempty"`
 	PastRoles         []string   `json:"past_roles,omitempty"`
@@ -37,6 +39,26 @@ type Official struct {
 	Flag              bool       `json:"flag,omitempty"`
 	FlagNote          string     `json:"flag_reason,omitempty"`
 	Metadata          Metadata   `json:"metadata,omitempty"`
+}
+
+// UnmarshalJSON supports both "id" and legacy "_id" payloads.
+func (o *Official) UnmarshalJSON(data []byte) error {
+	type alias Official
+	var payload struct {
+		alias
+		LegacyID string `json:"_id"`
+	}
+
+	if err := json.Unmarshal(data, &payload); err != nil {
+		return err
+	}
+
+	*o = Official(payload.alias)
+	if o.ID == "" {
+		o.ID = payload.LegacyID
+	}
+
+	return nil
 }
 
 // Normalize keeps alias fields consistent for backward compatibility.

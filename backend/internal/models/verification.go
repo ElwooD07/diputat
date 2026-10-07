@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // VerificationVerdict defines the review outcome.
 type VerificationVerdict string
@@ -52,7 +55,7 @@ type Contradiction struct {
 
 // Verification stores the outcome of a fact-checking workflow.
 type Verification struct {
-	ID             string               `json:"_id"`
+	ID             string               `json:"id"`
 	StatementID    string               `json:"statement_id"`
 	EvidenceText   string               `json:"evidence_text,omitempty"`
 	EvaluatorID    string               `json:"evaluator_id,omitempty"`
@@ -65,6 +68,26 @@ type Verification struct {
 	Contradictions []Contradiction      `json:"contradictions,omitempty"`
 	Notes          string               `json:"notes,omitempty"`
 	Metadata       VerificationMeta     `json:"metadata"`
+}
+
+// UnmarshalJSON supports both "id" and legacy "_id" payloads.
+func (v *Verification) UnmarshalJSON(data []byte) error {
+	type alias Verification
+	var payload struct {
+		alias
+		LegacyID string `json:"_id"`
+	}
+
+	if err := json.Unmarshal(data, &payload); err != nil {
+		return err
+	}
+
+	*v = Verification(payload.alias)
+	if v.ID == "" {
+		v.ID = payload.LegacyID
+	}
+
+	return nil
 }
 
 // VerificationMeta holds operational metadata for a verification document.

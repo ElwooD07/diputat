@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+	"time"
+)
 
 // StatementStatus defines the workflow state of a tracked statement/task.
 type StatementStatus string
@@ -30,7 +35,7 @@ type StatementSource struct {
 
 // Statement is the claim unit used for verification.
 type Statement struct {
-	ID              string          `json:"_id"`
+	ID              string          `json:"id"`
 	OfficialID      string          `json:"official_id"`
 	SourceURL       string          `json:"source_url,omitempty"`
 	Text            string          `json:"text,omitempty"`
@@ -43,6 +48,26 @@ type Statement struct {
 	Topics          []string        `json:"topics,omitempty"`
 	Sentiment       string          `json:"sentiment,omitempty"`
 	Metadata        StatementMeta   `json:"metadata"`
+}
+
+// UnmarshalJSON supports both "id" and legacy "_id" payloads.
+func (s *Statement) UnmarshalJSON(data []byte) error {
+	type alias Statement
+	var payload struct {
+		alias
+		LegacyID string `json:"_id"`
+	}
+
+	if err := json.Unmarshal(data, &payload); err != nil {
+		return err
+	}
+
+	*s = Statement(payload.alias)
+	if s.ID == "" {
+		s.ID = payload.LegacyID
+	}
+
+	return nil
 }
 
 // StatementMeta holds creation and language metadata for statements.
@@ -88,5 +113,25 @@ func normalizeStatementStatus(status StatementStatus) StatementStatus {
 			return mapped
 		}
 		return status
+	}
+}
+
+// Validate enforces required statement fields and workflow enums.
+func (s Statement) Validate() error {
+	if strings.TrimSpace(s.ID) == "" {
+		return fmt.Errorf("statement id must not be empty")
+	}
+	if strings.TrimSpace(s.OfficialID) == "" {
+		return fmt.Errorf("statement official_id must not be empty")
+	}
+	if strings.TrimSpace(s.Text) == "" && strings.TrimSpace(s.Content) == "" {
+		return fmt.Errorf("statement text/content must not be empty")
+	}
+
+	switch s.Status {
+	case StatementStatusInProgress, StatementStatusDone, StatementStatusBlocked, StatementStatusToxic:
+		return nil
+	default:
+		return fmt.Errorf("statement status is invalid: %s", s.Status)
 	}
 }

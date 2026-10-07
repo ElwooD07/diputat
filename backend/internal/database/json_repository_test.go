@@ -97,6 +97,26 @@ func TestJSONRepositoryFilteringAndSorting(t *testing.T) {
 	}
 }
 
+func TestUpsertStatementRejectsInvalidStatus(t *testing.T) {
+	t.Parallel()
+
+	dataDir := t.TempDir()
+	repo, err := NewJSONRepository(dataDir)
+	if err != nil {
+		t.Fatalf("NewJSONRepository: %v", err)
+	}
+
+	err = repo.UpsertStatement(context.Background(), models.Statement{
+		ID:         "statement-invalid",
+		OfficialID: "official-1",
+		Text:       "Claim",
+		Status:     "UnknownStatus",
+	})
+	if err == nil {
+		t.Fatal("expected invalid status error")
+	}
+}
+
 func TestJSONRepositoryConcurrentUpsertAndReads(t *testing.T) {
 	t.Parallel()
 

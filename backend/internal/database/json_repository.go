@@ -69,6 +69,9 @@ func NewJSONRepository(dataDir string) (*JSONRepository, error) {
 	}
 	for i := range statements {
 		statements[i].Normalize()
+		if err := statements[i].Validate(); err != nil {
+			return nil, fmt.Errorf("invalid statement %q: %w", statements[i].ID, err)
+		}
 	}
 
 	verifications, err := loadOrInitCollection[models.Verification](repo.verificationsPath)
@@ -259,6 +262,9 @@ func (r *JSONRepository) UpsertStatement(_ context.Context, statement models.Sta
 		return errors.New("statement id must not be empty")
 	}
 	statement.Normalize()
+	if err := statement.Validate(); err != nil {
+		return err
+	}
 
 	r.mu.Lock()
 	defer r.mu.Unlock()

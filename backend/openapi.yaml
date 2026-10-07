@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: Diputat Backend API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /api/v1/officials:
+    get:
+      operationId: listOfficials
+      responses:
+        '200':
+          description: Officials list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Official'
+  /api/v1/statements:
+    get:
+      operationId: listStatements
+      parameters:
+        - in: query
+          name: official_id
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Statements list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Statement'
+components:
+  schemas:
+    Official:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        current_role:
+          type: string
+        past_roles:
+          type: array
+          items:
+            type: string
+        total_tasks:
+          type: integer
+        done_tasks:
+          type: integer
+        verification_score:
+          type: number
+          format: float
+        handle:
+          type: string
+        position:
+          type: string
+        party:
+          type: string
+        contacts:
+          type: object
+          properties:
+            social:
+              type: array
+              items:
+                type: object
+                properties:
+                  platform:
+                    type: string
+                  url:
+                    type: string
+                  handle:
+                    type: string
+            official:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  value:
+                    type: string
+        bio:
+          type: string
+        photo_url:
+          type: string
+        flag:
+          type: boolean
+        flag_reason:
+          type: string
+    Statement:
+      type: object
+      required:
+        - id
+        - official_id
+        - status
+      properties:
+        id:
+          type: string
+        official_id:
+          type: string
+        source_url:
+          type: string
+        text:
+          type: string
+        date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [InProgress, Done, Blocked, Toxic]
+        backlog_priority:
+          type: integer
+        content:
+          type: string
+        source:
+          type: object
+          properties:
+            type:
+              type: string
+            url:
+              type: string
+            title:
+              type: string
+            date:
+              type: string
+              format: date-time
+            media_outlet:
+              type: string
+        extracted_by:
+          type: string
+        topics:
+          type: array
+          items:
+            type: string
+        sentiment:
+          type: string

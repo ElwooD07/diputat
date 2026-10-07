@@ -21,12 +21,11 @@ backend/
 ### Endpoints
 - `GET /health`
 - `GET /api/v1/officials`
-- `GET /api/v1/officials/{id}`
 - `GET /api/v1/statements`
-- `GET /api/v1/statements/{id}`
-- `GET /api/v1/verifications`
-- `GET /api/v1/verifications/{id}`
-- `GET /api/v1/timeline`
+  - optional query param: `official_id`
+
+### OpenAPI
+- `openapi.yaml`
 
 ### Data Source
 - Local JSON files in `../data/samples` by default

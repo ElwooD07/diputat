@@ -25,7 +25,10 @@ func withCORS(next http.Handler) http.Handler {
 
 func main() {
 	cfg := config.Load()
-	server := api.NewServer(cfg)
+	server, err := api.NewServer(cfg)
+	if err != nil {
+		log.Fatalf("initialize server: %v", err)
+	}
 	handler := withCORS(server)
 
 	log.Printf("%s backend listening on :%s using data directory %s", config.PROJECT_NAME, cfg.Port, cfg.DataDir)
