@@ -1,59 +1,25 @@
-# Diputat - Project Status & State Log
+# DIPUTAT: COMPACT ARCHITECTURE MATRIX & INGESTION STATE
 
-_Last Updated: 2026-10-08_
+## A. SYSTEM CONFIGURATION BASELINE
 
-## 1. System Context & Active Rules
+- **Environment:** Windows 10 x64 | CGO_ENABLED=0 (Pure Go compiler forced)
+- **Module Boundary:** Verified local module mapping (`go.mod` inside `backend/`).
+- **Target Component Source:** `backend/internal/storage/repository.go` [STABLE]
+- **Verification Vector:** `backend/internal/storage/repository_test.go` [STABLE]
 
-- **Repository Layout:** Multi-module architecture. The Go module (`go.mod`) is located inside the `backend/` directory.
-- **Build Constraints:** Windows 10 x64, CGO is disabled globally (`CGO_ENABLED=0`).
-- **Commands:** Run `go build ./...` and `go test ./...` strictly from inside the `backend/` folder.
-- **AI Stack:**
-  - Remote Architect: Cloud Gemini (High-reasoning, architectural decisions).
-  - Local Executor: Qwen 2.5 Coder 14B via VS Code Continue (Inline edits via `Ctrl+I`).
+## B. DATA INGESTION PROTOCOL (PHASE 1: HARVESTING)
 
-## 2. Verified File Architecture
+- **Core Subject Vector:** European Solidarity (ЄС) party faction track.
+- **Data Range:** Retrospective (2018) | Pre-War (Winter 2021/22) | Active-War (Spring-Autumn 2022).
+- **Source Gateway:** Verkhovna Rada Open Data Hub (`data.rada.gov.ua/ogd/zal/stenogram/`).
 
-### `backend/internal/storage/repository.go`
+## C. INFRASTRUCTURE & NETWORK LAWS
 
-- Fully normalized graph architecture (Nodes: Authors, ExternalSources, Statements).
-- Contains structs: `Author`, `ExternalSource`, `StatementSource`, `StatementLink`, `Statement`.
-- Contains `FileStatementRepository` with `SaveStatement` and `saveToFile` helper.
+1. **Authentication Rule:** Access is anonymous using the implicit `OpenData` system token context. Bulk script triggers targeting `api/limits` are prohibited to prevent immediate IP fire wall blocks.
+2. **Rate Limiting Guardrail:** Explicit download orchestration forced inside `downloader.go` — maximum 60 requests per minute with randomized interval offsets between 5 and 7 seconds.
+3. **Data Loss Strategy:** Chronological continuity drops caused by wartime redacted blocks or closed plenary sessions must be treated as valid historical status markers, not engine errors.
 
-### `backend/internal/storage/repository_test.go`
+## D. ACTIVE TESTING BACKLOG
 
-- Target test case: `TestGraphArchitectureIngestion`.
-- Successfully writes and cross-links graph nodes into `data/samples/generated/`.
-- **Status:** COMPILING & PASSING.
-
-## 3. Immediate Implementation Backlog
-
-- [ ] Task 1: Implement Graph Reader (`GetStatementByID` & `GetAuthorByID`).
-- [ ] Task 2: Implement Graph Crawler (`GetStatementTimeline` recursively resolving `StatementLink`).
-- [ ] Task 3: Implement Trust Aggregator (Calculating weights based on `ExternalSource.TrustRating`).
-
-## 4. Execution Rules for Remote AI
-
-1. Provide highly strict, explicit English prompts for the local model to execute using `Ctrl+I`.
-2. Do not attempt to guess or fix build errors speculatively unless the user explicitly copies a terminal failure block.
-3. Assume the codebase matches this file state exactly.
-
-## 5. Established Architecture Decisions (Frozen & Approved)
-
-### A. Graph Traversal & Infinite Loop Mitigation
-
-- **Mechanism:** Choice B (Visited Nodes Map Tracker).
-- **Implementation Rule:** The recursive timeline graph crawler must maintain a thread-safe `map[string]bool` tracker of visited `StatementID` entries during any depth traversal.
-- **Human-Centric Rule:** If a cycle is detected, the traversal breaks to prevent a stack overflow, but the cycle edge must be explicitly logged and flagged in the output data structure so human investigators can audit the self-referential rhetorical loop.
-
-### B. Ingestion Fault-Tolerance & Lazy Node Resolution
-
-- **Mechanism:** Approach 2 (Dynamic Placeholder Provisioning).
-- **Implementation Rule:** Entry-point ingestion must never drop or fail a statement due to missing foreign key profiles (`AuthorID` or `ExternalEvidenceIDs`).
-- **Resolution Strategy:**
-  1. If a statement references a non-existent `AuthorID`, the system automatically provisions a placeholder profile under that ID with `FullName: "Pending Verification / New Actor"` and records the statement.
-  2. The data structure is treated as an organic, growing graph. Cleanups, biochemical deduplication, and manual biography updates are delegated downstream to human auditors. The pipeline remains unblocked.
-
-### C. Production-Grade Ingestion Constraints (2026-10-09)
-
-- **Data Retention Rule:** No text-length filters, character gates, or structural omissions are permitted during the download pass.
-- **Upgradability Law:** All chronological sentences delivered by target MPs must be saved intact to preserve historical fidelity. Text cleaning, optimization, and analytical noise-filtering are entirely decoupled from Phase 1 and deferred downstream.
+- [ ] Implement the static structures inside `scripts/downloader.go` mapping to Rada's chronological log payload fields.
+- [ ] Map out the multi-year speaker naming variations for strict dictionary resolution matching.
