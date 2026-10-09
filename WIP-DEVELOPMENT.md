@@ -1,25 +1,22 @@
-# DIPUTAT: COMPACT ARCHITECTURE MATRIX & INGESTION STATE
+# DIPUTAT: GLOBAL DEVELOPMENT MASTERPLAN
 
-## A. SYSTEM CONFIGURATION BASELINE
+## 1. COMPILER & RUNTIME REFACTOR FACT-BASE
 
-- **Environment:** Windows 10 x64 | CGO_ENABLED=0 (Pure Go compiler forced)
-- **Module Boundary:** Verified local module mapping (`go.mod` inside `backend/`).
-- **Target Component Source:** `backend/internal/storage/repository.go` [STABLE]
-- **Verification Vector:** `backend/internal/storage/repository_test.go` [STABLE]
+- **OS Environment:** Windows 10 x64 | `CGO_ENABLED=0` (Pure Go compiler forced)
+- **Module Architecture:** Single Go module initialized. `go.mod` is physically located inside the `backend/` directory.
+- **Source Component State:**
+  - `backend/internal/storage/model.go` [STABLE] - Defines raw domain structures (`Author`, `Party`, `SourcePoint`, `Link`, `Statement`).
+  - `backend/internal/storage/repository.go` [STABLE] - Handles pure disk-based storage mappings and SHA-256 cryptographic content addressing (`SaveStatement`, `SaveLink`, `GetAuthorByID`).
+  - `backend/internal/storage/repository_test.go` [STABLE] - Verifies content-addressed token serialization locally via `go test -count=1 ./...`.
 
-## B. DATA INGESTION PROTOCOL (PHASE 1: HARVESTING)
+## 2. API PROTOCOL CONSTRAINTS (CONTRACT-FIRST)
 
-- **Core Subject Vector:** European Solidarity (ЄС) party faction track.
-- **Data Range:** Retrospective (2018) | Pre-War (Winter 2021/22) | Active-War (Spring-Autumn 2022).
-- **Source Gateway:** Verkhovna Rada Open Data Hub (`data.rada.gov.ua/ogd/zal/stenogram/`).
+- **Protocol:** Strict Flat REST API verified via OpenAPI 3.0 specification.
+- **Data Transfer Architecture:** Pure decoupled layout. The backend serves flat node models directly from disk without performing expensive recursive graph-nesting loops. Node compilation and visual edge assembly are fully delegated to the lightweight React layer.
+- **Cryptographic Continuity:** IDs are passed strictly as string hashes (`stmt_<sha256>`, `link_<sha256>`), allowing polymorphic runtime routing on both ends of the generator pipeline.
 
-## C. INFRASTRUCTURE & NETWORK LAWS
+## 3. ACTIVE CODEGENERATION & INGESTION BACKLOG
 
-1. **Authentication Rule:** Access is anonymous using the implicit `OpenData` system token context. Bulk script triggers targeting `api/limits` are prohibited to prevent immediate IP fire wall blocks.
-2. **Rate Limiting Guardrail:** Explicit download orchestration forced inside `downloader.go` — maximum 60 requests per minute with randomized interval offsets between 5 and 7 seconds.
-3. **Data Loss Strategy:** Chronological continuity drops caused by wartime redacted blocks or closed plenary sessions must be treated as valid historical status markers, not engine errors.
-
-## D. ACTIVE TESTING BACKLOG
-
-- [ ] Implement the static structures inside `scripts/downloader.go` mapping to Rada's chronological log payload fields.
-- [ ] Map out the multi-year speaker naming variations for strict dictionary resolution matching.
+- Task 3.1: Generate type-safe Go server stubs from the OpenAPI spec using `oapi-codegen`.
+- Task 3.2: Generate type-safe TypeScript interfaces from the OpenAPI spec for the React workspace.
+- Task 3.3: Implement the raw JSON stream mapping structures inside `scripts/downloader.go` to match Verkhovna Rada's actual log layout.
