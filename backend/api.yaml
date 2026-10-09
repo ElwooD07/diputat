@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: Diputat Graph Engine API
+  version: 1.0.0
+  description: Lightweight contract-first REST API powering the content-addressed political graph.
+
+paths:
+  /api/v1/statements/{id}:
+    get:
+      summary: Retrieve a single content-addressed statement node
+      operationId: GetStatementByID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "stmt_a1b2c3d4..."
+      responses:
+        "200":
+          description: Strict statement object returned directly from disk.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Statement"
+        "404":
+          description: Statement file node not found.
+
+  /api/v1/authors/{id}:
+    get:
+      summary: Retrieve a single human politician node
+      operationId: GetAuthorByID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "auth_poroshenko"
+      responses:
+        "200":
+          description: Pristine author anchor or a dynamically provisioned lazy placeholder.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+
+  /api/v1/links:
+    get:
+      summary: Query standalone edge nodes by their source or target boundaries
+      operationId: GetLinks
+      parameters:
+        - name: source_id
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "stmt_a1b2c3d4..."
+        - name: target_id
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "psrc_voxukraine"
+      responses:
+        "200":
+          description: A flat slice of matched standalone directed graph edges.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Link"
+
+components:
+  schemas:
+    Statement:
+      type: object
+      required:
+        [
+          id,
+          author_id,
+          current_party_id,
+          session_type,
+          content,
+          records,
+          created_at,
+        ]
+      properties:
+        id:
+          type: string
+        author_id:
+          type: string
+        current_party_id:
+          type: string
+        session_type:
+          type: string
+        content:
+          type: string
+        records:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatementRecord"
+        created_at:
+          type: string
+          format: date-time
+
+    StatementRecord:
+      type: object
+      required: [url, published_at]
+      properties:
+        url:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+
+    Author:
+      type: object
+      required: [id, full_name, birth_date]
+      properties:
+        id:
+          type: string
+        full_name:
+          type: string
+        birth_date:
+          type: string
+          format: date-time
+
+    Link:
+      type: object
+      required: [id, source_id, target_id, type, context]
+      properties:
+        id:
+          type: string
+        source_id:
+          type: string
+        target_id:
+          type: string
+        type:
+          type: string
+          enum: [refutes, supports, references]
+        context:
+          type: string
