@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -74,4 +75,18 @@ func (r *FileStatementRepository) saveToFile(subDir string, id string, data inte
 		return err
 	}
 	return os.WriteFile(filepath.Join(subDir, fmt.Sprintf("%s.json", id)), fileBytes, 0644)
+}
+
+// SaveLink commits a standalone link edge to disk under a content-addressed schema
+func (r *FileStatementRepository) SaveLink(ctx context.Context, l *Link) error {
+	if l.SourceID == "" || l.TargetID == "" || l.Type == "" {
+		return fmt.Errorf("invalid link parameters: source, target, and type are mandatory")
+	}
+
+	// Compute link cryptographic ID based on composite unique attributes
+	compositeKey := fmt.Sprintf("%s_%s_%s", l.SourceID, l.TargetID, string(l.Type))
+	hash := sha256.Sum256([]byte(compositeKey))
+	l.ID = fmt.Sprintf("link_%x", hash)
+
+	return r.saveToFile(filepath.Join(r.OutputDir, "links"), l.ID, l)
 }
