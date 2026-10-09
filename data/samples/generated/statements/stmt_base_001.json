@@ -1,0 +1,20 @@
+{
+  "id": "stmt_base_001",
+  "author_id": "auth_ivanov",
+  "content": "No funds were taken from the defense budget.",
+  "sources": [
+    {
+      "source_url": "https://t.me",
+      "published_at": "2026-10-08T22:04:04.911995+03:00"
+    },
+    {
+      "source_url": "https://rada.gov.ua",
+      "published_at": "2026-10-08T23:04:04.911995+03:00"
+    }
+  ],
+  "related_statements": null,
+  "external_evidence_ids": [
+    "src_bihus"
+  ],
+  "created_at": "2026-10-09T00:04:04.911995+03:00"
+}
